@@ -33,8 +33,8 @@ if __name__ == '__main__':
     test_data = (7,10)
     end_date = (7,31)
 
-    VALID_SIZE = 960
-    TEST_SIZE = 960
+    VALID_SIZE = 1920
+    TEST_SIZE = 1920
 
     temp_data = []
     result_rmse = []
