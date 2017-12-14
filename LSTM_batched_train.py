@@ -41,9 +41,6 @@ if __name__ == '__main__':
     TIME_STEPS = 16
     TEST_SIZE = 1920
 
-    PRINT_GAP = 1
-    SAVE_GAP = 2
-
     INIT_LEARNING_RATE = 0.001
 
     LSTM_1_UNITS = 128
@@ -97,7 +94,7 @@ if __name__ == '__main__':
                 self.valid_losses.append(logs.get('val_loss'))
 
         loss_history = LossHistory()
-        early_stop = callbacks.EarlyStopping(monitor='val_loss',min_delta=0,patience=2,verbose=1,mode='auto')
+        early_stop = callbacks.EarlyStopping(monitor='val_loss',min_delta=0,patience=1,verbose=1,mode='auto')
 
         model.fit(x_train,y_train,batch_size=BATCH_SIZE,epochs=EPOCH_SIZE,verbose=1,callbacks=[loss_history,early_stop])
 
