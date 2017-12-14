@@ -6,7 +6,7 @@ from sklearn import preprocessing as prep
 history_dir = 'data/preprocessed_data/history_data/scattered_speed/'
 predict_dir ='data/preprocessed_data/predict_data/'
 
-history_data_name = ['[machine{}_accurate.csv'.format(i) for i in range(1, 7)]
+history_data_name = ['machine{}_accurate.csv'.format(i) for i in range(1, 7)]
 predict_data_name = ['machine{}_predict.csv'.format(i) for i in range(1, 7)]
 
 days_of_month = {3:31,4:30,5:31,6:30,7:31}
