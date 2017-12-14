@@ -48,7 +48,7 @@ if __name__ == '__main__':
     LSTM_INPUT_DROPOUT = 0.2
     LSTM_RECURRENT_DROPOUT = 0.2
     DENSE_1_UNIT = 128
-
+    generator=0
     for generator in range(6):
 
         label_data = pd.read_csv(history_dir + history_data_name[generator])[['month','day','second','speed']]
@@ -77,7 +77,7 @@ if __name__ == '__main__':
         x_train = x_data[: -TEST_SIZE]
         y_train = y_data[: -TEST_SIZE]
         x_test = x_data[-TEST_SIZE:]
-        y_test = x_data[-TEST_SIZE:]
+        y_test = y_data[-TEST_SIZE:]
 
         model = Sequential()
         model.add(LSTM(units=LSTM_1_UNITS,input_shape=(TIME_STEPS,input_dim),return_sequences=True,dropout=LSTM_INPUT_DROPOUT,recurrent_dropout=LSTM_RECURRENT_DROPOUT))
@@ -96,7 +96,7 @@ if __name__ == '__main__':
         loss_history = LossHistory()
         early_stop = callbacks.EarlyStopping(monitor='val_loss',min_delta=0,patience=1,verbose=1,mode='auto')
 
-        model.fit(x_train,y_train,batch_size=BATCH_SIZE,epochs=EPOCH_SIZE,verbose=1,callbacks=[loss_history,early_stop])
+        model.fit(x_train,y_train,batch_size=BATCH_SIZE,epochs=EPOCH_SIZE,validation_data=(x_test,y_test),verbose=1,callbacks=[loss_history,early_stop])
 
         print('Training finish!')
         print('Finishing loss: {0:f}'.format(loss_history.epoch_losses[-1]))
