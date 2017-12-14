@@ -39,8 +39,8 @@ if __name__ == '__main__':
     EPOCH_SIZE = 1
     BATCH_SIZE = 1
     TIME_STEPS = 1
-    VALID_SIZE = 960
-    TEST_SIZE = 960
+    VALID_SIZE = 1920
+    TEST_SIZE = 1920
 
     PRINT_GAP = 1
     SAVE_GAP = 2
