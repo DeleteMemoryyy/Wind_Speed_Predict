@@ -35,12 +35,12 @@ valid_date = (6,21)
 test_data = (7,10)
 end_date = (7,31)
 
-EPOCH_SIZE = 30
+EPOCH_SIZE = 80
 BATCH_SIZE = 32
 TIME_STEPS = 32
 TEST_SIZE = 1920
 
-EARLY_STOP_MIN_DELTA = -0.02
+EARLY_STOP_MIN_DELTA = -0.08
 EARLY_STOP_PATIENCE = 3
 
 INIT_LEARNING_RATE = 0.00006
@@ -108,14 +108,8 @@ for generator in range(6):
     generator_dir = '{0:s}generator{1:d}/'.format(net_dir,generator+1)
     if (not os.path.exists(generator_dir)):
         os.mkdir(generator_dir)
-    # existed_nets = os.listdir(generator_dir)
-    # counter = 0
-    # for e_net in existed_nets:
-    #     if (os.path.isfile(generator_dir+e_net) and e_net.endswith('_net_model.h5')):
-    #         counter += 1
-    save_name = '{0:s}_e{1:d}_b{2:d}_s{3:d}_net_model.h5'.format(
-        'batched', EPOCH_SIZE, BATCH_SIZE, TIME_STEPS)
-
+    save_name = '{0:s}_e{1:d}_b{2:d}_s{3:d}_emd{4:.3f}_ep{5:d}_model.h5'.format(
+        'batched', EPOCH_SIZE, BATCH_SIZE, TIME_STEPS,EARLY_STOP_MIN_DELTA,EARLY_STOP_PATIENCE)
     model.save('{0:s}{1:s}'.format(generator_dir, save_name))
     print('Save to: {0:s}{1:s}'.format(generator_dir, save_name))
 

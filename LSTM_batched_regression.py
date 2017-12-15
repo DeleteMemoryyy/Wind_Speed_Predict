@@ -17,7 +17,7 @@ from keras.optimizers import Adam
 history_dir = 'data/preprocessed_data/history_data/accurate_biased_average/'
 predict_dir ='data/preprocessed_data/predict_data/'
 net_dir = 'net/'
-net_name = 'batched_e30_b32_s32_net_model.h5'
+net_name = 'batched_e80_b32_s32_emd-0.080_ep3_model.h5'
 
 history_data_name = ['machine{}_accurate.csv'.format(i) for i in range(1, 7)]
 std_history_data_name = ['std_machine{}_accurate.csv'.format(i) for i in range(1, 7)]
@@ -73,8 +73,9 @@ for generator in range(6):
 
 result_data = np.transpose(np.array(result_data))
 result = pd.DataFrame(result_data,columns=['G{}'.format(i) for i in range(1,7)])
-print('LSTM_batched_test_rmse: {}'.format(np.array(result_rmse).mean()))
-save_name = 'result/result_{}_LSTM_batched.csv'.format(time.strftime('%b_%d_%H-%M-%S',time.localtime()))
+test_rmse = np.array(result_rmse).mean()
+print('LSTM_batched_test_rmse: {}'.format(test_rmse))
+save_name = 'result/result_{0:s}_LSTM_batched_{1:.5f}.csv'.format(time.strftime('%b_%d_%H-%M-%S',time.localtime()), test_rmse)
 result.to_csv(save_name,header=True,index=False,encoding='utf-8')
 print('save to {}\n'.format(save_name))
 
