@@ -84,7 +84,7 @@ for generator in range(6):
     model = Sequential()
     model.add(LSTM(units=LSTM_1_UNITS,input_shape=(TIME_STEPS,input_dim),return_sequences=True,dropout=LSTM_INPUT_DROPOUT,recurrent_dropout=LSTM_RECURRENT_DROPOUT))
     model.add(LSTM(units=LSTM_2_UNITS,input_shape=(TIME_STEPS,LSTM_1_UNITS),dropout=LSTM_INPUT_DROPOUT,recurrent_dropout=LSTM_RECURRENT_DROPOUT))
-    model.add(Dense(output_dim))
+    model.add(Dense(output_dim,activation='relu'))
     adam = Adam(INIT_LEARNING_RATE,decay=INIT_LEARNING_RATE*0.8/EPOCH_SIZE)
     model.compile(loss='mean_squared_error',optimizer=adam)
 
