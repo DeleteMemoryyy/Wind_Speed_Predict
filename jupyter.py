@@ -1,9 +1,26 @@
 from scipy import io as scio
 import pandas as pd
-data = scio.loadmat('data/HisRawData/201604/20160401.mat')
+import numpy as np
+import sklearn
+from sklearn import linear_model as lm
+# data = scio.loadmat('data/HisRawData/201604/20160401.mat')
 
 
-data['__header__']
-data['FJDATA'][0,1][0].shape
+# data['__header__']
+# data['FJDATA'][0,1][0].shape
 
-df = pd.DataFrame(data)
+# df = pd.DataFrame(data)
+
+train = np.zeros((3,3))
+train[:,:] = 1.0
+test = np.zeros((3,3))
+test[:,:] = 3.0
+
+lr = lm.LinearRegression()
+lr. fit(train,test)
+output = lr.predict(train)
+output
+
+data = np.arange(27).reshape((3,3,3))
+data.mean(1).shape
+data[:,:,0]
