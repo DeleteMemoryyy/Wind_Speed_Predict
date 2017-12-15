@@ -36,19 +36,22 @@ if __name__ == '__main__':
     test_data = (7,10)
     end_date = (7,31)
 
-    EPOCH_SIZE = 10
-    BATCH_SIZE = 4
-    TIME_STEPS = 16
+    EPOCH_SIZE = 30
+    BATCH_SIZE = 32
+    TIME_STEPS = 32
     TEST_SIZE = 1920
 
-    INIT_LEARNING_RATE = 0.001
+    EARLY_STOP_MIN_DELTA = -0.02
+    EARLY_STOP_PATIENCE = 3
+
+    INIT_LEARNING_RATE = 0.00006
 
     LSTM_1_UNITS = 128
     LSTM_2_UNITS = 256
     LSTM_INPUT_DROPOUT = 0.2
     LSTM_RECURRENT_DROPOUT = 0.2
     DENSE_1_UNIT = 128
-    generator=0
+
     for generator in range(6):
 
         label_data = pd.read_csv(history_dir + history_data_name[generator])[['month','day','second','speed']]
@@ -83,37 +86,42 @@ if __name__ == '__main__':
         model.add(LSTM(units=LSTM_1_UNITS,input_shape=(TIME_STEPS,input_dim),return_sequences=True,dropout=LSTM_INPUT_DROPOUT,recurrent_dropout=LSTM_RECURRENT_DROPOUT))
         model.add(LSTM(units=LSTM_2_UNITS,input_shape=(TIME_STEPS,LSTM_1_UNITS),dropout=LSTM_INPUT_DROPOUT,recurrent_dropout=LSTM_RECURRENT_DROPOUT))
         model.add(Dense(output_dim))
-        adam = Adam(INIT_LEARNING_RATE)
+        adam = Adam(INIT_LEARNING_RATE,decay=INIT_LEARNING_RATE*0.8/EPOCH_SIZE)
         model.compile(loss='mean_squared_error',optimizer=adam)
 
         class LossHistory(callbacks.Callback):
             def on_train_begin(self, logs={}):
+                self.train_losses = []
                 self.valid_losses = []
 
             def on_epoch_end(self, epoch, logs={}):
+                self.train_losses.append(logs.get('loss'))
                 self.valid_losses.append(logs.get('val_loss'))
 
         loss_history = LossHistory()
-        early_stop = callbacks.EarlyStopping(monitor='val_loss',min_delta=0,patience=1,verbose=1,mode='auto')
+        early_stop = callbacks.EarlyStopping(monitor='val_loss',min_delta=EARLY_STOP_MIN_DELTA,patience=EARLY_STOP_PATIENCE,verbose=1,mode='auto')
 
         model.fit(x_train,y_train,batch_size=BATCH_SIZE,epochs=EPOCH_SIZE,validation_data=(x_test,y_test),verbose=1,callbacks=[loss_history,early_stop])
 
         print('Training finish!')
-        print('Finishing loss: {0:f}'.format(loss_history.epoch_losses[-1]))
+        print('Finishing training loss: {0:f}, valid loss: {1:f}'.format(loss_history.train_losses[-1], loss_history.valid_losses[-1]))
 
-        generator_dir = '{0:s}/generator{1:d}/'.format(net_dir,generator+1)
-        existed_nets = os.listdir(generator_dir)
-        counter = 0
-        for e_net in existed_nets:
-            if (os.path.isfile(generator_dir+e_net) and e_net.endswith('_net_model.h5')):
-                counter += 1
-        save_name = '{0:d}_{1:.4f}_{2:d}_net_model.h5'.format(
-            counter, INIT_LEARNING_RATE, early_stop.stopped_epoch)
+        generator_dir = '{0:s}generator{1:d}/'.format(net_dir,generator+1)
+        if (not os.path.exists(generator_dir)):
+            os.mkdir(generator_dir)
+        # existed_nets = os.listdir(generator_dir)
+        # counter = 0
+        # for e_net in existed_nets:
+        #     if (os.path.isfile(generator_dir+e_net) and e_net.endswith('_net_model.h5')):
+        #         counter += 1
+        save_name = '{0:s}_e{1:d}_b{2:d}_s{3:d}_net_model.h5'.format(
+            'batched', EPOCH_SIZE, BATCH_SIZE, TIME_STEPS)
 
         model.save('{0:s}{1:s}'.format(generator_dir, save_name))
         print('Save to: {0:s}{1:s}'.format(generator_dir, save_name))
 
-        valid_rmse = np.sqrt(np.array(loss_history.valid_losses))
-        sns.distplot(valid_rmse, hist=False,
-                     kde_kws={"shade": True}, ax=axes[1, 0])
-        plt.savefig('img/generator{0:d}{1:s}_loss.png'.format(generator+1,save_name[:-3]))
+        train_rmse = np.sqrt(np.array(loss_history.train_losses)).tolist()
+        valid_rmse = np.sqrt(np.array(loss_history.valid_losses)).tolist()
+        plot_data = pd.DataFrame({'train_rmse':train_rmse,'valid_rmse':valid_rmse})
+        plot_data.plot()
+        plt.savefig('img/generator{0:d}/{1:s}.png'.format(generator+1,save_name[:-3]))
