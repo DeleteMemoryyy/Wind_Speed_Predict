@@ -1,6 +1,11 @@
 data/
 net/
 
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
 # IDE and editor files
 .idea/
 .vscode/

@@ -3,8 +3,6 @@ import pandas as pd
 
 class DataConfig(object):
     def __init__(self, mode):
-        self.mode = mode
-
         self.history_dir = 'data/preprocessed_data/history_data/accurate_biased_average/'
         self.predict_dir = 'data/preprocessed_data/predict_data/'
         self.history_data_name = ['machine{}_accurate.csv'.format(i) for i in range(1, 7)]
@@ -23,11 +21,12 @@ class DataConfig(object):
             self.HIS_TIME_OFFSET = 4*36 # no less than 4*36
         elif mode == 'lstm':
             self.PRE_TIME_STEPS = 32
-            self.HIS_TIME_STEPS = 32
+            self.HIS_TIME_STEPS = 16
             self.HIS_TIME_OFFSET = 4*36 # no less than 4*36
 
 class DataLoader(object):
     def __init__(self, generator, mode):
+        self.mode = mode
         conf = DataConfig(mode)
 
         history_data = pd.read_csv(
@@ -41,13 +40,12 @@ class DataLoader(object):
             label_data['day'] == conf.start_date[1]) & (label_data['second'] == 0)].index[0]
 
         x_data_his = history_data['speed'].values.reshape(
-            -1, 60)[:][:-conf.HIS_TIME_OFFSET+conf.HIS_TIME_STEPS]
+            -1, 60)[:][:-conf.HIS_TIME_OFFSET]
         x_data_pre = predict_data.drop(conf.pre_drop_columns, axis=1)[
             :][conf.HIS_TIME_OFFSET + conf.HIS_TIME_STEPS - conf.PRE_TIME_STEPS:].values
         y_data = label_data['speed'][label_idx_st:].values.reshape(-1, 60)[conf.HIS_TIME_OFFSET + conf.HIS_TIME_STEPS:]
 
         sample_num = y_data.shape[0]
-
         assert sample_num == x_data_his.shape[0] - conf.HIS_TIME_STEPS and sample_num == x_data_pre.shape[0] - conf.PRE_TIME_STEPS
 
         windows_data = []

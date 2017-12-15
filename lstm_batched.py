@@ -1,8 +1,8 @@
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
-from keras.models import Sequential, load_model
-from keras.layers import LSTM, Dense, concatenate
+from keras.models import Sequential, load_model, Model
+from keras.layers import LSTM, Dense, Concatenate, Input
 from keras.optimizers import Adam
 from keras import callbacks
 
@@ -35,21 +35,17 @@ class BatchedLSTM(object):
         his_input_dim = dl.x_train_his.shape[2]
         output_dim = dl.y_train.shape[1]
 
-        model_pre = Sequential()
-        model_pre.add(LSTM(units=32, input_shape=(pre_time_steps, pre_input_dim), return_sequences=True,
-                    dropout=0.2, recurrent_dropout=0.2))
-        model_pre.add(LSTM(units=64, input_shape=(pre_time_steps, 32),
-                    dropout=0.2, recurrent_dropout=0.2))
+        input_pre = Input(shape=(pre_time_steps,pre_input_dim))
+        lstm_pre1 = LSTM(units=32 ,return_sequences=True, dropout=0.2, recurrent_dropout=0.2)(input_pre)
+        lstm_pre2 = LSTM(units=64, input_shape=(pre_time_steps, 32), dropout=0.2, recurrent_dropout=0.2)(lstm_pre1)
 
-        model_his = Sequential()
-        model_his.add(LSTM(units=32, input_shape=(his_time_steps, his_input_dim), return_sequences=True,
-                           dropout=0.2, recurrent_dropout=0.2))
-        model_his.add(LSTM(units=64, input_shape=(his_time_steps, 32),
-                           dropout=0.2, recurrent_dropout=0.2))
+        input_his = Input(shape=(his_time_steps,his_input_dim))
+        lstm_his1 = LSTM(units=32 ,return_sequences=True, dropout=0.2, recurrent_dropout=0.2)(input_his)
+        lstm_his2 = LSTM(units=64, input_shape=(his_time_steps, 32), dropout=0.2, recurrent_dropout=0.2)(lstm_his1)
 
-        model = Sequential()
-        model.add(concatenate([model_pre, model_his], axis=1))
-        model.add(Dense(output_dim, activation='relu'))
+        merged = Concatenate()([lstm_pre2, lstm_his2])
+        out = Dense(output_dim, activation='relu')(merged)
+        model = Model(inputs=[input_pre, input_his], outputs=out)
 
         conf = LSTMConfig()
         adam = Adam(conf.INIT_LEARNING_RATE,
