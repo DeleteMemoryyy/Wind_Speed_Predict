@@ -19,6 +19,7 @@ class DataConfig(object):
             self.PRE_TIME_STEPS = 32
             self.HIS_TIME_STEPS = 32
             self.HIS_TIME_OFFSET = 4*36 # no less than 4*36
+
         elif mode == 'lstm':
             self.PRE_TIME_STEPS = 32
             self.HIS_TIME_STEPS = 16
