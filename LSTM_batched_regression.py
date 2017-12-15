@@ -14,7 +14,6 @@ from keras.models import Sequential, save_model, load_model
 from keras.layers import Input, LSTM, TimeDistributed, Dense, Activation
 from keras.optimizers import Adam
 
-# if __name__ == '__main__':
 history_dir = 'data/preprocessed_data/history_data/accurate_biased_average/'
 predict_dir ='data/preprocessed_data/predict_data/'
 net_dir = 'net/'
