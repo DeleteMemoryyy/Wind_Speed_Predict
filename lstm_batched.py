@@ -65,7 +65,7 @@ class StackedEarlyStopping(callbacks.EarlyStopping):
                 if self.verbose > 0:
                     print('Restore weights to epoch %05d' % (self.stopped_epoch + 1 - self.stacked_weights))
         elif self.wait > 0:
-            self.model.load_weights('temp/weight{}.h5'.format(self.stacked_weights - 1 - self.wait))
+            self.model.load_weights('temp/weight{}.h5'.format(self.stacked_weights - self.wait))
             if self.verbose > 0:
                 print('Restore weights to epoch %05d' % (self.total_epoch + 1 - self.wait))
 
