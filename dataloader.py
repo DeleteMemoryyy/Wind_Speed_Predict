@@ -2,7 +2,8 @@ import numpy as np
 import pandas as pd
 
 class DataConfig(object):
-    def __init__(self, mode):
+    def __init__(self, mode, PRE_TIME_STEPS=None, HIS_TIME_STEPS=None, HIS_TIME_OFFSET=None):
+        self.mode = mode
         self.history_dir = 'data/preprocessed_data/history_data/accurate_biased_average/'
         self.predict_dir = 'data/preprocessed_data/predict_data/'
         self.history_data_name = ['machine{}_accurate.csv'.format(i) for i in range(1, 7)]
@@ -16,19 +17,18 @@ class DataConfig(object):
         self.pre_drop_columns = ['month', 'day', 'second', 'speed_out']
 
         if mode == 'norm':
-            self.PRE_TIME_STEPS = 32
-            self.HIS_TIME_STEPS = 32
-            self.HIS_TIME_OFFSET = 4*36 # no less than 4*36
+            self.PRE_TIME_STEPS = PRE_TIME_STEPS or 16
+            self.HIS_TIME_STEPS = HIS_TIME_STEPS or 2
+            self.HIS_TIME_OFFSET = HIS_TIME_OFFSET or 4*36 # no less than 4*36
 
         elif mode == 'lstm':
-            self.PRE_TIME_STEPS = 32
-            self.HIS_TIME_STEPS = 16
-            self.HIS_TIME_OFFSET = 4*36 # no less than 4*36
+            self.PRE_TIME_STEPS = PRE_TIME_STEPS or 32
+            self.HIS_TIME_STEPS = HIS_TIME_STEPS or 4
+            self.HIS_TIME_OFFSET = HIS_TIME_OFFSET or 4*36 # no less than 4*36
 
 class DataLoader(object):
-    def __init__(self, generator, mode):
-        self.mode = mode
-        conf = DataConfig(mode)
+    def __init__(self, generator, conf):
+        self.mode = conf.mode
 
         history_data = pd.read_csv(
             conf.history_dir + conf.std_history_data_name[generator])
@@ -58,15 +58,14 @@ class DataLoader(object):
             windows_data.append(x_data_pre[i: i + conf.PRE_TIME_STEPS])
         x_window_pre = np.array(windows_data)
 
-
-        if mode == 'norm':
+        if self.mode == 'norm':
             x_data = np.concatenate(
                 (x_data_his, x_data_pre), axis=1).reshape(sample_num, -1)
 
             self.x_train = x_data[: -conf.TEST_SIZE]
             self.x_test = x_data[-conf.TEST_SIZE:]
 
-        elif mode == 'lstm':
+        elif self.mode == 'lstm':
             self.x_train_his = x_window_his[: -conf.TEST_SIZE]
             self.x_train_pre = x_window_pre[: -conf.TEST_SIZE]
             self.x_test_his = x_window_his[-conf.TEST_SIZE:]
