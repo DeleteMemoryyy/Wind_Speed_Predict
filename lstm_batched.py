@@ -119,7 +119,7 @@ class BatchedLSTM(object):
         print('Generator{} training finish!'.format(generator+1))
         if early_stop.stopped_epoch > 0:
             print('Finishing training loss: {0:f}, valid loss: {1:f}'.format(
-                loss_history.train_losses[early_stop.stopped_epoch], loss_history.valid_losses[early_stop.stopped_epoch]))
+                loss_history.train_losses[early_stop.stopped_epoch - early_stop.patience], loss_history.valid_losses[early_stop.stopped_epoch - early_stop.patience]))
         else:
             print('Finishing training loss: {0:f}, valid loss: {1:f}'.format(
                 loss_history.train_losses[- 1 - early_stop.wait], loss_history.valid_losses[- 1 - early_stop.wait]))
