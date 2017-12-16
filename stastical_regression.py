@@ -102,7 +102,11 @@ class Stacking(object):
 
         for i, stacker in enumerate(self.stackers):
             y_predict[:, :, i] = stacker.predict(s_test.reshape((s_test.shape[0],-1)))[:]
-            y_predict_weighted += y_predict[:, :, i] * self.stacker_weight[i]
+            y_predict_weighted += y_predict[:, :, i] * self.weights[i]
+
+        stackers_num = len(self.stackers)
+        for i, result in enumerate(self.added_results):
+            y_predict_weighted += result * self.weights[stackers_num + i]
 
         return y_predict_weighted
 
