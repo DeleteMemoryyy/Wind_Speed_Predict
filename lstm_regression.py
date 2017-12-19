@@ -5,7 +5,7 @@ from sklearn import metrics
 from dataloader import DataLoader, DataConfig
 from lstm_batched import BatchedLSTM
 
-net_name = 'batched_ps32_hs4_e20_b32_emd0.000_ep3_model6.h5'
+net_name = 'Dec_16_13-19-31_batched_ps32_hs4_e30_b32_lr0.00010_emd0.000_ep5_model6.h5'
 
 def lstm_regression_all(dl_lstm_list, save_file=False):
     result_list = []

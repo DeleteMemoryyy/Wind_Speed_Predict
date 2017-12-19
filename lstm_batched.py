@@ -85,7 +85,7 @@ class LSTMConfig(object):
         self.INIT_LEARNING_RATE = 0.0001
 
 class BatchedLSTM(object):
-    def fit(self, generator, dl):
+    def fit(self, generator, dl, date_name=''):
         assert dl.mode == 'lstm'
 
         pre_time_steps = dl.x_train_pre.shape[1]
@@ -124,7 +124,7 @@ class BatchedLSTM(object):
             print('Finishing training loss: {0:f}, valid loss: {1:f}'.format(
                 loss_history.train_losses[- 1 - early_stop.wait], loss_history.valid_losses[- 1 - early_stop.wait]))
 
-        save_name = '{0:s}_ps{1:d}_hs{2:d}_e{3:d}_b{4:d}_lr{5:.5f}_emd{6:.3f}_ep{7:d}_model{8:d}.h5'.format('batched', pre_time_steps,his_time_steps, conf.EPOCH_SIZE, conf.BATCH_SIZE, conf.INIT_LEARNING_RATE, conf.EARLY_STOP_MIN_DELTA, conf.EARLY_STOP_PATIENCE, generator+1)
+        save_name = date_name + '_{0:s}_ps{1:d}_hs{2:d}_e{3:d}_b{4:d}_lr{5:.5f}_emd{6:.3f}_ep{7:d}_model{8:d}.h5'.format('batched', pre_time_steps,his_time_steps, conf.EPOCH_SIZE, conf.BATCH_SIZE, conf.INIT_LEARNING_RATE, conf.EARLY_STOP_MIN_DELTA, conf.EARLY_STOP_PATIENCE, generator+1)
         model.save('{0:s}{1:s}'.format(conf.net_dir, save_name))
         print('Save to: {0:s}{1:s}'.format(conf.net_dir, save_name))
 
