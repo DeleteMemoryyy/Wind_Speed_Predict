@@ -7,7 +7,7 @@ rand_seed = 2017
 
 class Stacking(object):
     def __init__(self, n_folds, base_models, stackers, added_results, weights):
-        assert len(stackers) + len(added_results) == (weights)
+        assert len(stackers) + len(added_results) == len(weights)
         assert np.array(weights).sum() == 1.0
         self.y_dim = 1
 
@@ -77,6 +77,8 @@ class Stacking(object):
         y_predict = np.zeros((T.shape[0], self.y_dim, len(self.stackers)))
         y_predict_weighted = np.zeros((T.shape[0], self.y_dim))
 
+        print(s_train.shape,s_test.shape,y_predict.shape,y_predict_weighted.shape)
+
         for i, mod in enumerate(self.base_models):
             s_test_i = np.zeros(
                 (s_test.shape[0], self.y_dim, kf.get_n_splits()))
@@ -97,16 +99,24 @@ class Stacking(object):
 
             s_test[:, :, i] = s_test_i.mean(1)
 
+        print('finish data load')
+
         for stacker in self.stackers:
             stacker.fit(s_train.reshape((s_train.shape[0],-1)), y)
+
+        print('finsih staker training')
 
         for i, stacker in enumerate(self.stackers):
             y_predict[:, :, i] = stacker.predict(s_test.reshape((s_test.shape[0],-1)))[:]
             y_predict_weighted += y_predict[:, :, i] * self.weights[i]
 
+        print('finish staker predicting')
+
         stackers_num = len(self.stackers)
         for i, result in enumerate(self.added_results):
             y_predict_weighted += result * self.weights[stackers_num + i]
+
+        print('finish add result')
 
         return y_predict_weighted
 

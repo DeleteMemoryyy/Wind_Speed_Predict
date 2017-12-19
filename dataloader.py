@@ -60,7 +60,7 @@ class DataLoader(object):
 
         if self.mode == 'norm':
             x_data = np.concatenate(
-                (x_data_his, x_data_pre), axis=1).reshape(sample_num, -1)
+                (x_window_his.reshape((sample_num, -1)), x_window_pre.reshape((sample_num, -1))), axis=1).reshape((sample_num, -1))
 
             self.x_train = x_data[: -conf.TEST_SIZE]
             self.x_test = x_data[-conf.TEST_SIZE:]
