@@ -17,6 +17,7 @@ import seaborn as sns
 from dataloader import DataLoader
 from stastical_regression import Stacking, CV
 from lstm_batched import BatchedLSTM
+import lstm_regression
 
 dl_norm = [DataLoader(g, 'norm') for g in range(6)]
 dl_lstm = [DataLoader(g, 'lstm') for g in range(6)]
@@ -39,3 +40,9 @@ rgfr = rgf.RGFRegressor(max_leaf=700, learning_rate=0.005,
 
 models = []
 model_names = []
+
+#%%
+if enable_stacking:
+    add_result = []
+    
+    stacking = Stacking
