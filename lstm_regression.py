@@ -7,7 +7,7 @@ from lstm_batched import BatchedLSTM
 
 net_name = 'batched_ps32_hs4_e20_b32_emd0.000_ep3_model6.h5'
 
-def lstm_regression_all(dl_lstm_list, save_file):
+def lstm_regression_all(dl_lstm_list, save_file=False):
     result_list = []
     result_rmse = []
     for generator in range(6):
