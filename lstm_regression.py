@@ -19,7 +19,7 @@ def lstm_regression_all(dl_lstm_list, save_file=False):
     if save_file:
         flatten_data = np.transpose(np.array(result_list).reshape((len(result_list),-1)))
         result = pd.DataFrame(flatten_data,columns=['G{}'.format(i) for i in range(1,7)])
-        test_rmse = np.array(result_rmse).mean()
+        test_rmse = np.sqrt(np.power(np.array(result_rmse),2).mean())
         print('LSTM_batched_test_rmse: {}'.format(test_rmse))
         save_name = 'result/result_{0:s}_LSTM_batched_{1:.5f}.csv'.format(time.strftime('%b_%d_%H-%M-%S',time.localtime()), test_rmse)
         result.to_csv(save_name,header=True,index=False,encoding='utf-8')

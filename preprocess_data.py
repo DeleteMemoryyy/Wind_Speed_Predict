@@ -4,7 +4,8 @@ import pandas as pd
 from sklearn import preprocessing as prep
 
 # history_dir = 'data/preprocessed_data/history_data/scattered_speed/'
-history_dir = 'data/preprocessed_data/history_data/accurate_biased_average/'
+# history_dir = 'data/preprocessed_data/history_data/accurate_biased_average/'
+history_dir = 'data/preprocessed_data/history_data/our_prediction_to_labels/'
 predict_dir = 'data/preprocessed_data/predict_data/'
 
 history_data_name = ['machine{}_accurate.csv'.format(i) for i in range(1, 7)]

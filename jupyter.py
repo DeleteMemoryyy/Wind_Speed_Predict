@@ -23,8 +23,9 @@ dl = DataLoader(0,DataConfig('lstm'))
 # output = lr.predict(train)
 # output
 
-# data = np.arange(27).reshape((3,3,3))
-# data.mean(1).shape
-# data[:,:,0]
+data = np.arange(27).reshape((3,3,3))
+data
+data.mean(1)
+data[:,:,0]
 
 # data.tolist()
