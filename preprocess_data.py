@@ -88,10 +88,16 @@ reshape_columns = ['NT_speed', 'P_out', 'speed_out', 'u_out',
 
 for generator in range(6):
     new_history_data = pd.read_csv(history_dir + history_data_name[generator])[['month','day','second','speed']]
+    new_history_data = new_history_data.dropna()
+    new_history_data['month'] = new_history_data['month'].astype('int')
+    new_history_data['day'] = new_history_data['day'].astype('int')
+    new_history_data['second'] = new_history_data['second'].astype('int')
+    new_history_data.to_csv(
+        history_dir + 'new_' + history_data_name[generator], index=False, float_format='%.4f')
+
     new_history_data = new_history_data[((new_history_data['month'] > 4) & (new_history_data['month'] < 7)) | (
         (new_history_data['month'] == 4) & (new_history_data['day'] >= 4)) | ((new_history_data['month'] == 7) & (new_history_data['day'] <= 30))]
     new_history_data.index = range(new_history_data.shape[0])
     ss_x = prep.StandardScaler()
     new_history_data['speed'] = ss_x.fit_transform(new_history_data['speed'].values.reshape(-1,1))
-    new_history_data.to_csv(
-        history_dir + 'std_' + history_data_name[generator], index=False, float_format='%.4f')
+

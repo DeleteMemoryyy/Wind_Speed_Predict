@@ -4,7 +4,7 @@ import pandas as pd
 class DataConfig(object):
     def __init__(self, mode, PRE_TIME_STEPS=None, HIS_TIME_STEPS=None, HIS_TIME_OFFSET=None):
         self.mode = mode
-        self.history_dir = 'data/preprocessed_data/history_data/accurate_biased_average/'
+        self.history_dir = 'data/preprocessed_data/history_data/our_prediction_to_labels/'
         self.predict_dir = 'data/preprocessed_data/predict_data/'
         self.history_data_name = ['machine{}_accurate.csv'.format(i) for i in range(1, 7)]
         self.std_history_data_name = [

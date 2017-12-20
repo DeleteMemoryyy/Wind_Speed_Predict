@@ -6,26 +6,52 @@ from sklearn import linear_model as lm
 from dataloader import DataLoader,DataConfig
 # data = scio.loadmat('data/HisRawData/201604/20160401.mat')
 
-dl = DataLoader(0,DataConfig('lstm'))
+nearest_dir = 'data/preprocessed_data/history_data/scattered_speed/'
+average_dir = 'data/preprocessed_data/history_data/accurate_biased_average/'
+generated_dir = 'data/preprocessed_data/history_data/our_prediction_to_labels/'
+predict_dir = 'data/preprocessed_data/predict_data/'
 
-# data['__header__']
-# data['FJDATA'][0,1][0].shape
+history_data_name = ['machine{}_accurate.csv'.format(i) for i in range(1, 7)]
+predict_data_name = ['machine{}_predict.csv'.format(i) for i in range(1, 7)]
 
-# df = pd.DataFrame(data)
+dlconf_ave = DataConfig('lstm')
+dlconf_ave.history_dir = average_dir
+dl_ave = DataLoader(0,dlconf_ave)
 
-# train = np.zeros((3,3))
-# train[:,:] = 1.0
-# test = np.zeros((3,3))
-# test[:,:] = 3.0
+dlconf_gene = DataConfig('lstm')
+dlconf_gene.history_dir = generated_dir
+dl_gene = DataLoader(0, dlconf_gene)
+from scipy import io as scio
+import pandas as pd
+import numpy as np
+import sklearn
+from sklearn import linear_model as lm
+from dataloader import DataLoader,DataConfig
+# data = scio.loadmat('data/HisRawData/201604/20160401.mat')
 
-# lr = lm.LinearRegression()
-# lr. fit(train,test)
-# output = lr.predict(train)
-# output
+nearest_dir = 'data/preprocessed_data/history_data/scattered_speed/'
+average_dir = 'data/preprocessed_data/history_data/accurate_biased_average/'
+generated_dir = 'data/preprocessed_data/history_data/our_prediction_to_labels/'
+predict_dir = 'data/preprocessed_data/predict_data/'
 
-data = np.arange(27).reshape((3,3,3))
-data
-data.mean(1)
-data[:,:,0]
+history_data_name = ['machine{}_accurate.csv'.format(i) for i in range(1, 7)]
+predict_data_name = ['machine{}_predict.csv'.format(i) for i in range(1, 7)]
 
-# data.tolist()
+dlconf_ave = DataConfig('lstm')
+dlconf_ave.history_dir = average_dir
+dl_ave = DataLoader(0,dlconf_ave)
+
+dlconf_gene = DataConfig('lstm')
+dlconf_gene.history_dir = generated_dir
+dl_gene = DataLoader(0, dlconf_gene)
+
+dlconf_ave.history_dir
+dlconf_gene.history_dir
+dl_ave.mode
+dl_ave.y_test.shape
+
+dl_ave.x_train_his.shape
+dl_gene.x_train_his.shape
+
+dl_ave.x_train_pre.shape
+dl_gene.x_train_pre.shape
