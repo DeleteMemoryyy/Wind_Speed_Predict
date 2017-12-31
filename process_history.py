@@ -11,8 +11,6 @@ history_data_name = ['machine{}_accurate.csv'.format(i) for i in range(1, 7)]
 
 TEST_SIZE = 1920
 
-MATCHING_SIZE = 192
-
 # nearest_result_data = np.zeros((TEST_SIZE*60,6))
 # nearest_result_data[:,:] = 3.0
 

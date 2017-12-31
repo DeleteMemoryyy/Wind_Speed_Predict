@@ -100,4 +100,5 @@ for generator in range(6):
     new_history_data.index = range(new_history_data.shape[0])
     ss_x = prep.StandardScaler()
     new_history_data['speed'] = ss_x.fit_transform(new_history_data['speed'].values.reshape(-1,1))
-
+    new_history_data.to_csv(
+        history_dir + 'std_' + history_data_name[generator], index=False, float_format='%.4f')
