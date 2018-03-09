@@ -1,4 +1,5 @@
 import time
+import warnings
 import numpy as np
 import pandas as pd
 from sklearn import ensemble
@@ -11,13 +12,19 @@ import xgboost as xgb
 import lightgbm as lgb
 
 from dataloader import DataLoader, DataConfig
+from dataloader_2 import DataFrameMix
 from stastical_regression import Stacking
+
+warnings.filterwarnings('ignore')
 
 save_file = False
 enable_stacking = True
 enable_add_result = False
 enable_lstm = False
 lstm_file = 'result_Dec_16_11-06-09_LSTM_batched_1.89311.csv'
+data_file = ["data/new_mixed_machine{}.csv".format(i) for i in range(1, 7)]
+dl_norm = [DataFrameMix(data_file[i]) for i in range(6)]
+# dl_norm = [DataLoader(g, DataConfig('norm')) for g in range(6)]
 
 
 svr = svm.SVR(C=200, gamma=0.001)
@@ -36,14 +43,10 @@ lgbr = lgb.LGBMRegressor(num_leaves=3, min_data_in_leaf=11,
 rgfr = rgf.RGFRegressor(max_leaf=700, learning_rate=0.005,
                         min_samples_leaf=5, test_interval=50)
 
-
-
-dl_norm = [DataLoader(g, DataConfig('norm')) for g in range(6)]
-
 #%%
 if enable_stacking:
-    base_models = [lm.LinearRegression()]
-    stacker = [lm.LinearRegression()]
+    base_models = [xgbr,xgblr,lgbr]
+    stacker = [lm.ElasticNet(alpha=0.45, l1_ratio=0.5)]
     all_added_result = []
     weights = [1.0]
     # weights = [0.5, 0.5]
@@ -74,7 +77,7 @@ if enable_stacking:
     if save_file:
         result = pd.DataFrame(np.transpose(np.array(result_list)), columns=['G{}'.format(i) for i in range(1, 7)])
         test_rmse=np.array(result_rmse).mean()
-        print('LSTM_batched_test_rmse: {}'.format(test_rmse))
+        print('test_rmse: {}'.format(test_rmse))
         save_name='result/result_{0:s}_stacking_{1:.5f}.csv'.format(time.strftime('%b_%d_%H-%M-%S', time.localtime()), test_rmse)
         if enable_lstm:
             save_name='result/result_{0:s}_stacking_lstm_{1:.5f}.csv'.format(
